@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 	"time"
-
+	"context"
 	"github.com/imansabet/shortlink-platform/internal/link"
 )
 
@@ -18,7 +18,23 @@ func main() {
 		addr = v
 	}
 
-	handler := link.NewHandler(link.NewMemoryStore())
+
+var store link.Store = link.NewMemoryStore()
+if dsn := os.Getenv("DATABASE_URL"); dsn != "" {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	pg, err := link.NewPostgresStore(ctx, dsn)
+	cancel()
+	if err != nil {
+		logger.Error("database connection failed", "error", err)
+		os.Exit(1)
+	}
+	store = pg
+	logger.Info("using postgres store")
+} else {
+	logger.Info("using in-memory store")
+}
+
+handler := link.NewHandler(store)
 	srv := &http.Server{
 		Addr:              addr,
 		Handler:           handler.Routes(),
