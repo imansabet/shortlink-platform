@@ -28,3 +28,6 @@ a code change to a running, monitored service.
 ## Status
 
 Work in progress. See the commit history for progress.
+
+
+<img width="1884" height="858" alt="image" src="https://github.com/user-attachments/assets/57e518a2-ef55-4161-8b7a-d5ec053fe252" />
