@@ -2,3 +2,7 @@ image:
   repository: ghcr.io/imansabet/shortlink-platform
   tag: 2bc1f3b0b728914830db5d5b6e1f5adec4bbdc4a
   pullPolicy: IfNotPresent
+
+metrics:
+  serviceMonitor:
+    enabled: true    

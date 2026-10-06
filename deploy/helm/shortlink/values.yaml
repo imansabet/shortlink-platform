@@ -12,3 +12,9 @@ postgres:
   password: shortlink
   database: shortlink
   storage: 1Gi
+
+metrics:
+  serviceMonitor:
+    enabled: false
+
+    
