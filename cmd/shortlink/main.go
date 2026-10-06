@@ -20,9 +20,18 @@ func main() {
 
 	var store link.Store = link.NewMemoryStore()
 	if dsn := os.Getenv("DATABASE_URL"); dsn != "" {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		pg, err := link.NewPostgresStore(ctx, dsn)
-		cancel()
+		var pg *link.PostgresStore
+		var err error
+		for attempt := 1; attempt <= 10; attempt++ {
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			pg, err = link.NewPostgresStore(ctx, dsn)
+			cancel()
+			if err == nil {
+				break
+			}
+			logger.Warn("database not ready", "attempt", attempt, "error", err)
+			time.Sleep(3 * time.Second)
+		}
 		if err != nil {
 			logger.Error("database connection failed", "error", err)
 			os.Exit(1)

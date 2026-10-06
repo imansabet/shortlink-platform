@@ -1,0 +1,14 @@
+image:
+  repository: shortlink
+  tag: dev
+  pullPolicy: IfNotPresent
+
+service:
+  nodePort: 30080
+
+postgres:
+  image: postgres:17-alpine
+  user: shortlink
+  password: shortlink
+  database: shortlink
+  storage: 1Gi
