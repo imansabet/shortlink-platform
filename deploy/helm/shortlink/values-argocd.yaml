@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/imansabet/shortlink-platform
-  tag: <commit-sha>
+  tag: a850136a25d4bb9727af573196f475e5d8e167fb
   pullPolicy: IfNotPresent
 
 metrics:
