@@ -16,5 +16,6 @@ postgres:
 metrics:
   serviceMonitor:
     enabled: false
-
+  dashboard:
+    enabled: false
     

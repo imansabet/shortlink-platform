@@ -1,0 +1,11 @@
+{{- if .Values.metrics.dashboard.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  shortlink.json: |-
+{{ .Files.Get "dashboards/shortlink.json" | indent 4 }}
+{{- end }}
