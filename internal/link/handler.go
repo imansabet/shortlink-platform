@@ -6,6 +6,8 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -21,9 +23,10 @@ func NewHandler(store Store) *Handler {
 func (h *Handler) Routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", h.health)
+	mux.Handle("GET /metrics", promhttp.Handler())
 	mux.HandleFunc("POST /api/links", h.create)
 	mux.HandleFunc("GET /{code}", h.redirect)
-	return mux
+	return instrument(mux)
 }
 
 func (h *Handler) health(w http.ResponseWriter, _ *http.Request) {
