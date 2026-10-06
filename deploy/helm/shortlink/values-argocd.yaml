@@ -1,0 +1,4 @@
+image:
+  repository: ghcr.io/imansabet/shortlink-platform
+  tag: latest
+  pullPolicy: IfNotPresent

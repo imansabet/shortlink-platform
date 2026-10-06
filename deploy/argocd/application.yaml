@@ -10,11 +10,8 @@ spec:
     targetRevision: main
     path: deploy/helm/shortlink
     helm:
-      valuesObject:
-        image:
-          repository: ghcr.io/imansabet/shortlink-platform
-          tag: latest
-          pullPolicy: Always
+       valueFiles:
+        - values-argocd.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: shortlink
