@@ -1,0 +1,40 @@
+{{- if .Values.metrics.alerts.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  groups:
+    - name: shortlink
+      rules:
+        - alert: ShortlinkDown
+          expr: (sum(up{job="shortlink"}) or vector(0)) < 1
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: Shortlink has no healthy instance
+        - alert: ShortlinkHighErrorRate
+          expr: |
+            sum(rate(shortlink_http_requests_total{status=~"5..",route!="GET /metrics"}[5m]))
+              / sum(rate(shortlink_http_requests_total{route!="GET /metrics"}[5m])) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: More than 5 percent of requests fail with 5xx
+        - alert: ShortlinkHighLatency
+          expr: |
+            histogram_quantile(0.95, sum by (le) (rate(shortlink_http_request_duration_seconds_bucket{route!="GET /metrics"}[5m]))) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: p95 latency is above 500 ms
+        - alert: ShortlinkPodRestarting
+          expr: increase(kube_pod_container_status_restarts_total{namespace="shortlink"}[15m]) > 2
+          labels:
+            severity: warning
+          annotations:
+            summary: A shortlink container restarted more than twice in 15 minutes
+{{- end }}
